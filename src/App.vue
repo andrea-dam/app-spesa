@@ -4,18 +4,19 @@
             <span>{{ result.toFixed(2) }}</span
             ><span class="absolute right-6">€</span>
         </div>
-        <form @submit.prevent="addItem" @reset.prevent="result = 0" class="flex flex-col w-full justify-center">
+        <form @submit.prevent="addItem" @reset.prevent="reset" class="flex w-full flex-col justify-center px-10">
             <input
                 v-model.number="newItem"
                 ref="input"
-                type="tel"
                 name="prezzo"
                 id="prezzo"
                 placeholder="0.00 €"
-                class="py-4 text-4xl"
+                class="rounded-xl p-4 text-4xl"
             />
 
-            <button type="reset">Reset</button>
+            <button class="mt-5 w-1/2 self-center rounded bg-red-600 py-2 text-2xl text-white" type="reset">
+                Reset
+            </button>
         </form>
     </main>
 </template>
@@ -33,4 +34,10 @@ const addItem = () => {
 
 const input = ref();
 onMounted(() => input.value.focus());
+
+const reset = () => {
+    if (confirm("Sei sicuro di voler resettare la spesa?")) {
+        result.value = 0;
+    }
+};
 </script>
