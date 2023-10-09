@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between px-6 py-10 text-6xl">
             <div class="flex flex-col gap-1 text-xl font-semibold">
                 <span>Buoni: {{ totBuoni }}</span>
-                <span>Al prossimo buono: {{ spreco }}€</span>
+                <span :class="coloreSpreco">Al prossimo buono: {{ spreco }}€</span>
             </div>
             <span>{{ result.toFixed(2) }}</span>
             <span>€</span>
@@ -30,6 +30,17 @@ const newItem = ref();
 const result = ref(0);
 const totBuoni = computedEager(() => Math.floor(result.value / 8));
 const spreco = computed(() => (8 - (result.value % 8)).toFixed(2));
+
+const coloreSpreco = computed(() => {
+    if (spreco.value > 7 && spreco.value <= 8) return "text-green-500";
+    if (spreco.value > 6 && spreco.value <= 7) return "text-lime-500";
+    if (spreco.value > 5 && spreco.value <= 6) return "text-yellow-300";
+    if (spreco.value > 4 && spreco.value <= 5) return "text-amber-400";
+    if (spreco.value > 3 && spreco.value <= 4) return "text-orange-400";
+    if (spreco.value > 2 && spreco.value <= 3) return "text-orange-500";
+    if (spreco.value > 1 && spreco.value <= 2) return "text-orange-600";
+    if (spreco.value > 0 && spreco.value <= 1) return "text-red-500";
+});
 
 // const { history, undo, redo } = useRefHistory(result);
 // console.log(history.value);
