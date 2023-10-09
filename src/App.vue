@@ -17,14 +17,17 @@
                 placeholder="0.00 €"
                 class="rounded-xl border-2 p-4 text-end text-4xl text-neutral-950 shadow-inner" />
 
-            <button class="mt-5 w-1/2 self-center rounded-lg bg-red-600 py-2 text-2xl text-white shadow-md" type="reset">Reset</button>
+            <div class="mt-5 flex w-full justify-evenly text-2xl font-semibold text-white">
+                <button type="button" class="rounded-lg bg-yellow-400 px-4 py-2 shadow-md" @click="undo">Annulla</button>
+                <button class="rounded-lg bg-red-600 px-4 py-2 shadow-md" type="reset">Reset</button>
+            </div>
         </form>
     </main>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { computedEager } from "@vueuse/core";
+import { computedEager, useRefHistory } from "@vueuse/core";
 
 const newItem = ref();
 const result = ref(0);
@@ -42,8 +45,8 @@ const coloreSpreco = computed(() => {
     if (spreco.value > 0 && spreco.value <= 1) return "text-red-500";
 });
 
-// const { history, undo, redo } = useRefHistory(result);
-// console.log(history.value);
+const { undo } = useRefHistory(result);
+
 const addItem = () => {
     result.value += newItem.value;
     newItem.value = null;
