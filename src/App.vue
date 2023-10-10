@@ -5,7 +5,7 @@
                 <span>Buoni: {{ totBuoni }}</span>
                 <span :class="coloreSpreco">Al prossimo buono: {{ spreco }}€</span>
             </div>
-            <span>{{ result.toFixed(2) }}</span>
+            <span>{{ resultVisualizzato }}</span>
             <span>€</span>
         </div>
 
@@ -22,17 +22,27 @@
                 <button class="rounded-lg bg-red-600 px-4 py-2 shadow-md" type="reset">Reset</button>
             </div>
         </form>
+
+        <ul class="mt-10 flex flex-col gap-3 px-20 text-3xl">
+            <li v-for="(articolo, index) in articoliInseriti" :key="articolo" class="flex justify-between">
+                <span>{{ articolo.toFixed(2) }}</span>
+                <Icon role="button" @click="removeItem(articolo, index)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
+            </li>
+        </ul>
     </main>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { computedEager, useRefHistory } from "@vueuse/core";
+import { Icon } from "@iconify/vue";
+import { computedEager, useLocalStorage, useRefHistory } from "@vueuse/core";
 
 const newItem = ref();
-const result = ref(0);
+const result = useLocalStorage("result", 0);
+const resultVisualizzato = computed(() => result.value.toFixed(2));
 const totBuoni = computedEager(() => Math.floor(result.value / 8));
 const spreco = computed(() => (8 - (result.value % 8)).toFixed(2));
+const articoliInseriti = ref([]);
 
 const coloreSpreco = computed(() => {
     if (spreco.value > 7 && spreco.value <= 8) return "text-green-500";
@@ -49,6 +59,7 @@ const { undo } = useRefHistory(result);
 
 const addItem = () => {
     result.value += newItem.value;
+    articoliInseriti.value.unshift(newItem.value);
     newItem.value = null;
 };
 
@@ -59,5 +70,10 @@ const reset = () => {
     if (confirm("Sei sicuro di voler resettare la spesa?")) {
         result.value = 0;
     }
+};
+
+const removeItem = (item) => {
+    result.value -= item;
+    articoliInseriti.value = articoliInseriti.value.filter(element => element !== item);
 };
 </script>
