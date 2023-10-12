@@ -1,5 +1,5 @@
 <template>
-    <main>
+    <main class="h-[100dvh]">
         <div class="flex items-center justify-between px-6 py-10 text-6xl">
             <div class="flex flex-col gap-1 text-xl font-semibold">
                 <span>Buoni utilizzabili: {{ totBuoni }}</span>
@@ -15,7 +15,8 @@
                 ref="input"
                 id="prezzo"
                 placeholder="0.00 €"
-                class="rounded-xl border-2 p-4 text-end text-4xl text-neutral-950 shadow-inner" />
+                class="rounded-xl border-2 p-4 text-end text-4xl text-neutral-950 shadow-inner"
+                required />
 
             <div class="mt-5 flex w-full justify-evenly text-2xl font-semibold text-white">
                 <button type="button" class="rounded-lg bg-yellow-400 px-4 py-2 shadow-md" @click="undo">Annulla</button>
@@ -23,14 +24,16 @@
             </div>
         </form>
 
-        <ul class="flex flex-col gap-3 px-20 py-10 text-3xl relative">
+        <ul
+            v-if="articoliInseriti.length"
+            class="relative mx-10 mt-5 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-10 py-5 text-3xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
             <TransitionGroup
                 enter-from-class="opacity-0 transform-translate-y-10"
                 leave-to-class="opacity-0 transform-x-20"
                 leave-active-class="absolute">
                 <li
                     v-for="(articolo, index) in articoliInseriti"
-                    :key="articolo + 1"
+                    :key="articolo"
                     class="flex justify-between transition-all duration-300 ease-out">
                     <span>{{ articolo.toFixed(2) }} €</span>
                     <Icon role="button" @click="removeItem(index)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
