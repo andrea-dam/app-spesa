@@ -28,8 +28,8 @@
             v-if="articoliInseriti.length"
             class="relative mx-10 mt-5 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-10 py-5 text-3xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
             <TransitionGroup
-                enter-from-class="opacity-0 transform-translate-y-10"
-                leave-to-class="opacity-0 transform-x-20"
+                enter-from-class="opacity-0 -translate-y-10"
+                leave-to-class="opacity-0 -translate-x-20"
                 leave-active-class="absolute">
                 <li
                     v-for="articolo in articoliInseriti"
