@@ -30,7 +30,7 @@
             <TransitionGroup
                 enter-from-class="opacity-0 -translate-y-10"
                 leave-to-class="opacity-0 -translate-x-20"
-                leave-active-class="absolute">
+                leave-active-class="absolute left-10 right-10">
                 <li
                     v-for="articolo in articoliInseriti"
                     :key="articolo.id"
