@@ -9,7 +9,7 @@
             <span>€</span>
         </div>
 
-        <form @submit.prevent="addItem(counter)" @reset.prevent="reset" class="flex w-full flex-col justify-center px-10">
+        <form @submit.prevent="addItem" @reset.prevent="reset" class="flex w-full flex-col justify-center px-10">
             <input
                 v-model.number="newItem"
                 ref="input"
@@ -19,8 +19,8 @@
                 required />
 
             <div class="mt-5 flex w-full justify-evenly text-2xl font-semibold text-white">
-                <button type="button" class="rounded-lg bg-yellow-400 px-4 py-2 shadow-md" @click="undo">Annulla</button>
-                <button class="rounded-lg bg-red-600 px-4 py-2 shadow-md" type="reset">Reset</button>
+                <BaseButton type="button" class="bg-yellow-400" @click="undo">Annulla</BaseButton>
+                <BaseButton type="reset" class="bg-red-600">Reset</BaseButton>
             </div>
         </form>
 
@@ -32,11 +32,11 @@
                 leave-to-class="opacity-0 transform-x-20"
                 leave-active-class="absolute">
                 <li
-                    v-for="(articolo, index) in articoliInseriti"
-                    :key="articolo"
+                    v-for="articolo in articoliInseriti"
+                    :key="articolo.id"
                     class="flex justify-between transition-all duration-300 ease-out">
-                    <span>{{ articolo.toFixed(2) }} €</span>
-                    <Icon role="button" @click="removeItem(index)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
+                    <span>{{ articolo.quantity.toFixed(2) }} €</span>
+                    <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
                 </li>
             </TransitionGroup>
         </ul>
@@ -48,12 +48,12 @@ import { ref, onMounted, computed } from "vue";
 import { Icon } from "@iconify/vue";
 import { computedEager, useLocalStorage, useRefHistory } from "@vueuse/core";
 
+import BaseButton from "./components/BaseButton.vue";
+
 const newItem = ref();
 const articoliInseriti = useLocalStorage("array-articoli", []);
-const initialValue = 0;
-const result = computed(() =>
-    articoliInseriti.value.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue).toFixed(2)
-);
+const counter = useLocalStorage("counter", 0);
+const result = computed(() => articoliInseriti.value.reduce((acc, object) => acc + object.quantity, 0));
 const totBuoni = computedEager(() => Math.floor(result.value / 8));
 const spreco = computed(() => (8 - (result.value % 8)).toFixed(2));
 
@@ -72,17 +72,22 @@ const input = ref();
 onMounted(() => input.value.focus());
 
 const addItem = () => {
-    articoliInseriti.value.unshift(newItem.value);
+    articoliInseriti.value.unshift({ id: counter.value, quantity: newItem.value });
+    counter.value++;
     newItem.value = null;
 };
 
-const removeItem = (indice) => (articoliInseriti.value = articoliInseriti.value.filter((_, index) => index !== indice));
+const removeItem = (id) => {
+    counter.value--;
+    articoliInseriti.value = articoliInseriti.value.filter((object) => object.id !== id);
+};
 
 const { undo } = useRefHistory(articoliInseriti, { deep: true });
 
 const reset = () => {
     if (confirm("Sei sicuro di voler resettare la spesa?")) {
         articoliInseriti.value = [];
+        counter.value = 0;
     }
 };
 </script>
