@@ -57,7 +57,7 @@ const result = computed(() =>
 const totBuoni = computedEager(() => Math.floor(result.value / 8));
 const spreco = computed(() => (8 - (result.value % 8)).toFixed(2));
 
-const coloreSpreco = computed(() => {
+const coloreSpreco = computedEager(() => {
     if (spreco.value > 7 && spreco.value <= 8) return "text-green-500";
     if (spreco.value > 6 && spreco.value <= 7) return "text-lime-500";
     if (spreco.value > 5 && spreco.value <= 6) return "text-yellow-300";
