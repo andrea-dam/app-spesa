@@ -1,11 +1,11 @@
 <template>
-    <main class="h-[100dvh]">
-        <div class="flex items-center justify-between px-6 py-10 text-6xl">
+    <main>
+        <div class="flex items-center justify-between px-6 py-5 text-6xl">
             <div class="flex flex-col gap-1 text-xl font-semibold">
                 <span>Buoni utilizzabili: {{ totBuoni }}</span>
-                <span :class="coloreSpreco">Al prossimo buono: {{ spreco }}€</span>
+                <span :class="coloreSpreco">Al prossimo buono: {{ spreco.toLocaleString() }}€</span>
             </div>
-            <span>{{ result }}</span>
+            <span>{{ result.toLocaleString() }}</span>
             <span>€</span>
         </div>
 
@@ -25,9 +25,9 @@
         </form>
 
         <template v-if="articoliInseriti.length">
-            <span class="flex justify-center text-xl">Articoli inseriti: {{ articoliInseriti.length }}</span>
+            <span class="my-5 flex justify-center text-xl">Articoli inseriti: {{ articoliInseriti.length }}</span>
             <ul
-                class="relative mx-10 mt-5 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-10 py-5 text-3xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
+                class="relative mx-10 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-10 py-5 text-3xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
                 <TransitionGroup
                     enter-from-class="opacity-0 -translate-y-10"
                     leave-to-class="opacity-0 -translate-x-20"
@@ -36,7 +36,7 @@
                         v-for="articolo in articoliInseriti"
                         :key="articolo.id"
                         class="flex justify-between transition-all duration-300 ease-out">
-                        <span>{{ articolo.quantity.toFixed(2) }} €</span>
+                        <div class="w-16 text-right">{{ articolo.quantity.toLocaleString() }} €</div>
                         <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
                     </li>
                 </TransitionGroup>
@@ -55,9 +55,9 @@ import BaseButton from "./components/BaseButton.vue";
 const newItem = ref();
 const articoliInseriti = useLocalStorage("array-articoli", []);
 const counter = useLocalStorage("counter", 0);
-const result = computed(() => articoliInseriti.value.reduce((acc, object) => acc + object.quantity, 0).toFixed(2));
+const result = computed(() => articoliInseriti.value.reduce((acc, object) => acc + object.quantity, 0));
 const totBuoni = computedEager(() => Math.floor(result.value / 8));
-const spreco = computed(() => (8 - (result.value % 8)).toFixed(2));
+const spreco = computed(() => 8 - (result.value % 8));
 
 const coloreSpreco = computedEager(() => {
     if (spreco.value > 7 && spreco.value <= 8) return "text-green-500";
@@ -81,9 +81,9 @@ const addItem = () => {
     }
 };
 
-const removeItem = (id) => {
+const removeItem = id => {
     counter.value--;
-    articoliInseriti.value = articoliInseriti.value.filter((object) => object.id !== id);
+    articoliInseriti.value = articoliInseriti.value.filter(object => object.id !== id);
 };
 
 const { undo } = useRefHistory(articoliInseriti, { deep: true });
