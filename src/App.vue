@@ -24,22 +24,24 @@
             </div>
         </form>
 
-        <ul
-            v-if="articoliInseriti.length"
-            class="relative mx-10 mt-5 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-10 py-5 text-3xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
-            <TransitionGroup
-                enter-from-class="opacity-0 -translate-y-10"
-                leave-to-class="opacity-0 -translate-x-20"
-                leave-active-class="absolute left-10 right-10">
-                <li
-                    v-for="articolo in articoliInseriti"
-                    :key="articolo.id"
-                    class="flex justify-between transition-all duration-300 ease-out">
-                    <span>{{ articolo.quantity.toFixed(2) }} €</span>
-                    <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
-                </li>
-            </TransitionGroup>
-        </ul>
+        <template v-if="articoliInseriti.length">
+            <span class="flex justify-center text-xl">Articoli inseriti: {{ articoliInseriti.length }}</span>
+            <ul
+                class="relative mx-10 mt-5 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-10 py-5 text-3xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
+                <TransitionGroup
+                    enter-from-class="opacity-0 -translate-y-10"
+                    leave-to-class="opacity-0 -translate-x-20"
+                    leave-active-class="absolute left-10 right-10">
+                    <li
+                        v-for="articolo in articoliInseriti"
+                        :key="articolo.id"
+                        class="flex justify-between transition-all duration-300 ease-out">
+                        <span>{{ articolo.quantity.toFixed(2) }} €</span>
+                        <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
+                    </li>
+                </TransitionGroup>
+            </ul>
+        </template>
     </main>
 </template>
 
@@ -53,7 +55,7 @@ import BaseButton from "./components/BaseButton.vue";
 const newItem = ref();
 const articoliInseriti = useLocalStorage("array-articoli", []);
 const counter = useLocalStorage("counter", 0);
-const result = computed(() => articoliInseriti.value.reduce((acc, object) => acc + object.quantity, 0));
+const result = computed(() => articoliInseriti.value.reduce((acc, object) => acc + object.quantity, 0).toFixed(2));
 const totBuoni = computedEager(() => Math.floor(result.value / 8));
 const spreco = computed(() => (8 - (result.value % 8)).toFixed(2));
 
@@ -69,12 +71,14 @@ const coloreSpreco = computedEager(() => {
 });
 
 const input = ref();
-onMounted(() => input.value.focus());
+onMounted(() => inputFocus());
 
 const addItem = () => {
-    articoliInseriti.value.unshift({ id: counter.value, quantity: newItem.value });
-    counter.value++;
-    newItem.value = null;
+    if (newItem.value > 0) {
+        articoliInseriti.value.unshift({ id: counter.value, quantity: newItem.value });
+        counter.value++;
+        newItem.value = null;
+    }
 };
 
 const removeItem = (id) => {
@@ -88,6 +92,9 @@ const reset = () => {
     if (confirm("Sei sicuro di voler resettare la spesa?")) {
         articoliInseriti.value = [];
         counter.value = 0;
+        inputFocus();
     }
 };
+
+const inputFocus = () => input.value.focus();
 </script>
