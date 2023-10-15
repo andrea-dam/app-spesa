@@ -3,10 +3,9 @@
         <div class="flex items-center justify-between px-6 py-5 text-6xl">
             <div class="flex flex-col gap-1 text-xl font-semibold">
                 <span>Buoni utilizzabili: {{ totBuoni }}</span>
-                <span :class="coloreSpreco">Al prossimo buono: {{ spreco.toLocaleString() }}€</span>
+                <span :class="coloreSpreco">Al prossimo buono: {{ spreco.toLocaleString("it-IT", currencyOptions) }}</span>
             </div>
-            <span>{{ result.toLocaleString() }}</span>
-            <span>€</span>
+            <span>{{ result.toLocaleString("it-IT", currencyOptions) }}</span>
         </div>
 
         <form @submit.prevent="addItem" @reset.prevent="reset" class="flex w-full flex-col justify-center px-10">
@@ -36,7 +35,7 @@
                         v-for="articolo in articoliInseriti"
                         :key="articolo.id"
                         class="flex justify-between transition-all duration-300 ease-out">
-                        <div class="w-16 text-right">{{ articolo.quantity.toLocaleString() }} €</div>
+                        <div class="w-24 text-right">{{ articolo.quantity.toLocaleString("it-IT", currencyOptions) }}</div>
                         <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
                     </li>
                 </TransitionGroup>
@@ -97,4 +96,6 @@ const reset = () => {
 };
 
 const inputFocus = () => input.value.focus();
+
+const currencyOptions = { style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 2 };
 </script>
