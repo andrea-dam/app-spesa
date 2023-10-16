@@ -30,11 +30,9 @@
                 <TransitionGroup
                     enter-from-class="opacity-0 -translate-y-10"
                     leave-to-class="opacity-0 -translate-x-20"
-                    leave-active-class="absolute left-10 right-10">
-                    <li
-                        v-for="articolo in articoliInseriti"
-                        :key="articolo.id"
-                        class="flex justify-between transition-all duration-300 ease-out">
+                    enter-active-class="transition-all duration-300 ease-out"
+                    leave-active-class="absolute left-10 right-10 transition-all duration-300 ease-out">
+                    <li v-for="articolo in articoliInseriti" :key="articolo.id" class="flex justify-between">
                         <div class="w-24 text-right">{{ articolo.quantity.toLocaleString("it-IT", currencyOptions) }}</div>
                         <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
                     </li>
