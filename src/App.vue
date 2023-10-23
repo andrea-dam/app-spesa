@@ -14,7 +14,7 @@
                 ref="input"
                 id="prezzo"
                 placeholder="0.00 €"
-                class="rounded-xl border-2 p-4 text-end text-4xl text-neutral-950 shadow-inner"
+                class="rounded-lg border-2 p-4 text-end text-4xl text-neutral-950 shadow-inner"
                 required />
 
             <div class="mt-5 flex w-full justify-evenly text-2xl font-semibold text-white">
@@ -24,7 +24,7 @@
         </form>
 
         <template v-if="articoliInseriti.length">
-            <span class="my-5 flex justify-center text-xl">Articoli inseriti: {{ articoliInseriti.length }}</span>
+            <span class="my-5 flex justify-center text-xl">Totale articoli: {{ articoliInseriti.length }}</span>
             <ul
                 class="relative mx-10 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-10 py-5 text-3xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
                 <TransitionGroup
