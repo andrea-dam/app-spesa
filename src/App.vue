@@ -1,19 +1,40 @@
 <template>
-    <main>
+    <main class="relative overflow-hidden">
         <div class="flex items-center justify-between px-6 py-5 text-6xl">
             <div class="flex flex-col gap-1 text-xl font-semibold">
                 <span>Buoni utilizzabili: {{ totBuoni }}</span>
-                <span :class="coloreSpreco"
-                    >Al prossimo buono: {{ spreco.toLocaleString("it-IT", currencyOptions) }}</span
-                >
+                <span :class="coloreSpreco">
+                    Al prossimo buono: {{ spreco.toLocaleString("it-IT", currencyOptions) }}
+                </span>
             </div>
             <div class="flex flex-col items-end justify-between gap-4">
-                <Icon icon="mdi:gear" role="button" class="z-20 text-3xl" @click="toggleMenu()" />
+                <Icon icon="mdi:gear" role="button" class="z-50 text-3xl" @click="toggleMenu()" />
                 <span>{{ result.toLocaleString("it-IT", currencyOptions) }}</span>
             </div>
         </div>
 
-        <div v-if="isMenuOpen" class="fixed h-screen w-screen border-gray-500 bg-gray-600"></div>
+        <Transition
+            enter-active-class="transition-transform duration-300 ease-out"
+            leave-active-class="transition-transform duration-300 ease-out"
+            enter-from-class="translate-x-96"
+            leave-to-class="translate-x-96">
+            <div
+                v-if="isMenuOpen"
+                class="absolute bottom-8 left-8 right-0 top-20 z-40 rounded-l-3xl border-4 border-r-0 border-gray-50 bg-neutral-800 p-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-lg">Seleziona valore buono: </span>
+                    <select
+                        name="valore"
+                        id="valore"
+                        class="w-20 rounded-lg text-black"
+                        @change="isMenuOpen = false"
+                        v-model="valoreBuono">
+                        <option value="8">8 €</option>
+                        <option value="7">7 €</option>
+                    </select>
+                </div>
+            </div>
+        </Transition>
 
         <form @submit.prevent="addItem" @reset.prevent="reset" class="flex w-full flex-col justify-center px-10">
             <input
@@ -66,8 +87,11 @@ const newItem = ref();
 const articoliInseriti = useLocalStorage("array-articoli", []);
 const counter = useLocalStorage("counter", 0);
 const result = computed(() => articoliInseriti.value.reduce((acc, object) => acc + object.quantity, 0));
-const totBuoni = computedEager(() => Math.floor(result.value / 8));
-const spreco = computed(() => 8 - (result.value % 8));
+
+const valoreBuono = ref(8);
+const totBuoni = computedEager(() => Math.floor(result.value / valoreBuono.value));
+const spreco = computed(() => valoreBuono.value - (result.value % valoreBuono.value));
+
 const isMenuOpen = ref(false);
 const toggleMenu = useToggle(isMenuOpen);
 
