@@ -3,10 +3,17 @@
         <div class="flex items-center justify-between px-6 py-5 text-6xl">
             <div class="flex flex-col gap-1 text-xl font-semibold">
                 <span>Buoni utilizzabili: {{ totBuoni }}</span>
-                <span :class="coloreSpreco">Al prossimo buono: {{ spreco.toLocaleString("it-IT", currencyOptions) }}</span>
+                <span :class="coloreSpreco"
+                    >Al prossimo buono: {{ spreco.toLocaleString("it-IT", currencyOptions) }}</span
+                >
             </div>
-            <span>{{ result.toLocaleString("it-IT", currencyOptions) }}</span>
+            <div class="flex flex-col items-end justify-between gap-4">
+                <Icon icon="mdi:gear" role="button" class="z-20 text-3xl" @click="toggleMenu()" />
+                <span>{{ result.toLocaleString("it-IT", currencyOptions) }}</span>
+            </div>
         </div>
+
+        <div v-if="isMenuOpen" class="fixed h-screen w-screen border-gray-500 bg-gray-600"></div>
 
         <form @submit.prevent="addItem" @reset.prevent="reset" class="flex w-full flex-col justify-center px-10">
             <input
@@ -33,8 +40,14 @@
                     enter-active-class="transition-all duration-300 ease-out"
                     leave-active-class="absolute left-10 right-10 transition-all duration-300 ease-out">
                     <li v-for="articolo in articoliInseriti" :key="articolo.id" class="flex justify-between">
-                        <div class="w-24 text-right">{{ articolo.quantity.toLocaleString("it-IT", currencyOptions) }}</div>
-                        <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
+                        <div class="w-24 text-right">
+                            {{ articolo.quantity.toLocaleString("it-IT", currencyOptions) }}
+                        </div>
+                        <Icon
+                            role="button"
+                            @click="removeItem(articolo.id)"
+                            icon="tabler:circle-x-filled"
+                            class="text-4xl text-red-500" />
                     </li>
                 </TransitionGroup>
             </ul>
@@ -45,7 +58,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { Icon } from "@iconify/vue";
-import { computedEager, useLocalStorage, useRefHistory } from "@vueuse/core";
+import { computedEager, useLocalStorage, useRefHistory, useToggle } from "@vueuse/core";
 
 import BaseButton from "./components/BaseButton.vue";
 
@@ -55,6 +68,8 @@ const counter = useLocalStorage("counter", 0);
 const result = computed(() => articoliInseriti.value.reduce((acc, object) => acc + object.quantity, 0));
 const totBuoni = computedEager(() => Math.floor(result.value / 8));
 const spreco = computed(() => 8 - (result.value % 8));
+const isMenuOpen = ref(false);
+const toggleMenu = useToggle(isMenuOpen);
 
 const coloreSpreco = computedEager(() => {
     if (spreco.value > 7 && spreco.value <= 8) return "text-green-500";
