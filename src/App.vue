@@ -3,24 +3,18 @@
         <div class="flex items-center justify-between px-6 py-5 text-6xl">
             <div class="flex flex-col gap-1 text-xl font-semibold">
                 <span>Buoni utilizzabili: {{ totBuoni }}</span>
-                <span :class="coloreSpreco">
-                    Al prossimo buono: {{ spreco.toLocaleString("it-IT", currencyOptions) }}
-                </span>
+                <span :class="coloreSpreco"> Al prossimo buono: {{ convertToCurrency(spreco) }} </span>
             </div>
             <div class="flex flex-col items-end justify-between gap-4">
                 <Icon icon="mdi:gear" role="button" class="z-50 text-3xl" @click="toggleMenu()" />
-                <span>{{ result.toLocaleString("it-IT", currencyOptions) }}</span>
+                <span>{{ convertToCurrency(result) }}</span>
             </div>
         </div>
 
-        <Transition
-            enter-active-class="transition-transform duration-300 ease-out"
-            leave-active-class="transition-transform duration-300 ease-out"
-            enter-from-class="translate-x-96"
-            leave-to-class="translate-x-96">
+        <Transition enter-from-class="translate-x-96" leave-to-class="translate-x-96">
             <div
                 v-if="isMenuOpen"
-                class="absolute bottom-8 left-8 right-0 top-20 z-40 rounded-l-3xl border-4 border-r-0 border-gray-50 bg-neutral-800 p-4">
+                class="absolute bottom-8 left-8 right-0 top-20 z-40 rounded-l-3xl border-4 border-r-0 border-gray-50 bg-neutral-300 p-4 transition-transform duration-300 ease-out dark:bg-neutral-800">
                 <div class="flex items-center justify-between">
                     <span class="text-lg">Seleziona valore buono: </span>
                     <select
@@ -28,7 +22,7 @@
                         id="valore"
                         class="w-20 rounded-lg text-black"
                         @change="isMenuOpen = false"
-                        v-model="valoreBuono">
+                        v-model.number="valoreBuono">
                         <option value="8">8 €</option>
                         <option value="7">7 €</option>
                     </select>
@@ -61,14 +55,8 @@
                     enter-active-class="transition-all duration-300 ease-out"
                     leave-active-class="absolute left-10 right-10 transition-all duration-300 ease-out">
                     <li v-for="articolo in articoliInseriti" :key="articolo.id" class="flex justify-between">
-                        <div class="w-24 text-right">
-                            {{ articolo.quantity.toLocaleString("it-IT", currencyOptions) }}
-                        </div>
-                        <Icon
-                            role="button"
-                            @click="removeItem(articolo.id)"
-                            icon="tabler:circle-x-filled"
-                            class="text-4xl text-red-500" />
+                        <span class="w-24 text-right">{{ convertToCurrency(articolo.quantity) }}</span>
+                        <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
                     </li>
                 </TransitionGroup>
             </ul>
@@ -134,5 +122,11 @@ const reset = () => {
 
 const inputFocus = () => input.value.focus();
 
-const currencyOptions = { style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 2 };
+const convertToCurrency = number =>
+    number.toLocaleString("it-IT", {
+        style: "currency",
+        currency: "EUR",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
 </script>
