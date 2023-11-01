@@ -37,7 +37,7 @@
                     ref="priceInput"
                     id="prezzo"
                     placeholder="Inserisci prezzo"
-                    class="rounded-lg border-2 p-4 text-end text-4xl text-neutral-950 shadow-inner"
+                    class="rounded-lg border-2 p-4 text-end text-2xl text-neutral-950 shadow-inner"
                     required />
             </template>
             <template v-else>
@@ -46,7 +46,7 @@
                     ref="nameInput"
                     id="articolo"
                     placeholder="Inserisci nome articolo"
-                    class="rounded-lg border-2 p-4 text-end text-4xl text-neutral-950 shadow-inner" />
+                    class="rounded-lg border-2 p-4 text-2xl text-neutral-950 shadow-inner" />
             </template>
 
             <div class="mt-5 flex w-full justify-evenly text-2xl font-semibold text-white">
@@ -57,18 +57,23 @@
 
         <template v-if="articoliInseriti.length">
             <ul
-                class="relative mx-10 my-5 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-10 py-5 text-3xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
+                class="relative mx-10 my-5 flex max-h-64 flex-col gap-3 overflow-y-auto rounded-xl border bg-neutral-100 px-2 py-5 text-2xl shadow-inner transition-all duration-300 ease-out dark:bg-neutral-800">
                 <TransitionGroup
                     enter-from-class="opacity-0 -translate-y-10"
                     leave-to-class="opacity-0 -translate-x-20"
                     enter-active-class="transition-all duration-300 ease-out"
                     leave-active-class="absolute left-10 right-10 transition-all duration-300 ease-out">
                     <li v-for="articolo in articoliInseriti" :key="articolo.id" class="flex justify-between">
-                        <div class="flex gap-5">
-                            <span class="w-24 text-right">{{ convertToCurrency(articolo.price) }}</span>
-                            <span class="">{{ articolo.name }}</span>
+                        <div class="flex gap-2.5 truncate">
+                            <span class="w-20 text-right">{{ convertToCurrency(articolo.price) }}</span>
+                            <span>-</span>
+                            <span>{{ articolo.name }}</span>
                         </div>
-                        <Icon role="button" @click="removeItem(articolo.id)" icon="tabler:circle-x-filled" class="text-4xl text-red-500" />
+                        <Icon
+                            role="button"
+                            @click="removeItem(articolo.id)"
+                            icon="tabler:circle-x-filled"
+                            class="flex-none text-4xl text-red-500" />
                     </li>
                 </TransitionGroup>
             </ul>
